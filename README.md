@@ -28,6 +28,23 @@ my-ai-games/
 
 ## Setup
 
+### Environment Variables (.env)
+
+You can configure runtime options using a `.env` file in the project root. Copy `.env.example` to `.env` and adjust as needed:
+
+```
+cp .env.example .env
+```
+
+- `RENDER=1` — Enable Pygame rendering during agent training/evaluation (shows a game window)
+- `RENDER=0` — Run headless (no GUI window, default)
+
+The training scripts will automatically use this variable to control rendering. You can also override it on the command line:
+
+```
+RENDER=1 python -m src.flappy.app.train_agent
+```
+
 
 ### Requirements
 

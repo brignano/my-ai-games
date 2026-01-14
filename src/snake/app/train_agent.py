@@ -1,21 +1,25 @@
 """
-Train a random agent in the Flappy Bird Gym environment (for demonstration).
+Train a random agent in the Snake Gym environment (for demonstration).
 """
-
 import os
 import sys
 from dotenv import load_dotenv
 load_dotenv()
-from src.flappy.env.pygame_flappy_env import PygameFlappyEnv
-from src.flappy.agents.random_agent import RandomAgent
+from src.snake.env.pygame_snake_env import PygameSnakeEnv
+
+class RandomAgent:
+    def __init__(self, action_space):
+        self.action_space = action_space
+    def select_action(self, observation):
+        return self.action_space.sample()
+    def learn(self, *args, **kwargs):
+        pass
 
 NUM_EPISODES = 5
 
-
 def main():
-
     render = os.environ.get("RENDER") == "1" or "--render" in sys.argv
-    env = PygameFlappyEnv()
+    env = PygameSnakeEnv()
     agent = RandomAgent(env.action_space)
 
     for episode in range(NUM_EPISODES):
@@ -27,7 +31,7 @@ def main():
         while not done:
             action = agent.select_action(obs)
             obs, reward, done, truncated, info = env.step(action)
-            agent.learn(obs, reward, done, info)  # No-op for random agent
+            agent.learn(obs, reward, done, info)
             total_reward += reward
             steps += 1
             if render:

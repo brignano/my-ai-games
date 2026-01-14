@@ -46,8 +46,45 @@ class PygameSnakeEnv(gym.Env):
         return obs, reward, done, False, info
     
     def render(self):
-        """Rendering not implemented for headless training."""
-        pass
+        """Render the current game state using Pygame."""
+        import pygame
+        if not hasattr(self, '_screen'):
+            pygame.init()
+            CELL = 20
+            self._screen = pygame.display.set_mode((self.game.COLS * CELL, self.game.ROWS * CELL))
+            self._clock = pygame.time.Clock()
+            self._font = pygame.font.SysFont(None, 32)
+            self._CELL = CELL
+        screen = self._screen
+        game = self.game
+        CELL = self._CELL
+        # Process events to keep window responsive
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                pygame.quit()
+                import sys
+                sys.exit()
+        # Colors
+        BLACK = (0, 0, 0)
+        GREEN = (0, 200, 0)
+        RED = (200, 0, 0)
+        BLUE = (50, 150, 255)
+        WHITE = (255, 255, 255)
+        # Draw background
+        screen.fill(BLACK)
+        # Draw food
+        if game.food:
+            fx, fy = game.food
+            pygame.draw.rect(screen, RED, pygame.Rect(fx*CELL, fy*CELL, CELL, CELL))
+        # Draw snake
+        for i, (x, y) in enumerate(game.snake):
+            color = GREEN if i == 0 else BLUE
+            pygame.draw.rect(screen, color, pygame.Rect(x*CELL, y*CELL, CELL, CELL))
+        # Draw score
+        score_surf = self._font.render(f"Score: {game.score}", True, WHITE)
+        screen.blit(score_surf, (5, 5))
+        pygame.display.flip()
+        self._clock.tick(10)
     
     def close(self):
         """Clean up resources."""
