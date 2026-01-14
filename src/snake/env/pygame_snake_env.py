@@ -2,6 +2,7 @@
 import gymnasium as gym
 from gymnasium import spaces
 import numpy as np
+import random
 from ..game import SnakeGame
 
 
@@ -33,6 +34,7 @@ class PygameSnakeEnv(gym.Env):
     def reset(self, seed=None, options=None):
         """Reset the environment."""
         if seed is not None:
+            random.seed(seed)
             np.random.seed(seed)
         obs = self.game.reset()
         return obs, {}
