@@ -2,21 +2,23 @@ import pygame
 import random
 import sys
 
-pygame.init()
+# Game constants
 CELL = 20
 COLS, ROWS = 20, 20
 SCREEN_W, SCREEN_H = COLS * CELL, ROWS * CELL
 FPS = 10
 
+# Colors
 WHITE = (255, 255, 255)
 BLACK = (0, 0, 0)
 GREEN = (0, 200, 0)
 RED = (200, 0, 0)
 BLUE = (50, 150, 255)
 
-screen = pygame.display.set_mode((SCREEN_W, SCREEN_H))
-clock = pygame.time.Clock()
-font = pygame.font.SysFont(None, 32)
+# Global variables for pygame objects (initialized in main)
+screen = None
+clock = None
+font = None
 
 def random_cell(exclude):
     while True:
@@ -29,6 +31,14 @@ def draw_rect(pos, color):
     pygame.draw.rect(screen, color, pygame.Rect(x*CELL, y*CELL, CELL, CELL))
 
 def main():
+    global screen, clock, font
+    
+    # Initialize pygame
+    pygame.init()
+    screen = pygame.display.set_mode((SCREEN_W, SCREEN_H))
+    clock = pygame.time.Clock()
+    font = pygame.font.SysFont(None, 32)
+    
     running = True
     snake = [(COLS//2, ROWS//2), (COLS//2 - 1, ROWS//2), (COLS//2 - 2, ROWS//2)]
     direction = (1, 0)  # moving right
