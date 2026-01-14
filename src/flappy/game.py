@@ -35,6 +35,11 @@ class FlappyGame:
     - Small positive reward per frame survived
     """
     
+    # Reward constants
+    PIPE_PASS_REWARD = 1.0
+    COLLISION_PENALTY = -1.0
+    SURVIVAL_REWARD = 0.01
+    
     def __init__(self, screen_w=SCREEN_W, screen_h=SCREEN_H):
         self.screen_w = screen_w
         self.screen_h = screen_h
@@ -164,19 +169,19 @@ class FlappyGame:
             pipe["x"] -= self.pipe_speed
         
         # Check for scoring and remove off-screen pipes
-        reward = 0.01  # Small reward per frame survived
+        reward = self.SURVIVAL_REWARD
         for pipe in self.pipes:
             if not pipe["passed"] and pipe["x"] + self.pipe_width < self.bird_x:
                 pipe["passed"] = True
                 self.score += 1
-                reward = 1.0  # Larger reward for passing a pipe
+                reward = self.PIPE_PASS_REWARD
         
         self.pipes = [p for p in self.pipes if p["x"] + self.pipe_width > -50]
         
         # Check collision
         if self._check_collision():
             self.done = True
-            reward = -1.0
+            reward = self.COLLISION_PENALTY
             info = {"score": self.score, "reason": "collision"}
             return self._get_obs(), reward, True, info
         

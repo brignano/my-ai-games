@@ -29,6 +29,11 @@ class SnakeGame:
     - -0.01 per step (to encourage efficiency)
     """
     
+    # Reward constants
+    FOOD_REWARD = 1.0
+    COLLISION_PENALTY = -1.0
+    STEP_PENALTY = -0.01
+    
     def __init__(self, cols=COLS, rows=ROWS):
         self.cols = cols
         self.rows = rows
@@ -132,7 +137,7 @@ class SnakeGame:
         
         if hit_wall or hit_self:
             self.done = True
-            reward = -1.0
+            reward = self.COLLISION_PENALTY
             info = {"score": self.score, "reason": "collision"}
             return self._get_obs(), reward, True, info
         
@@ -143,11 +148,11 @@ class SnakeGame:
         if new_head == self.food:
             self.score += 1
             self.food = self._random_cell(self.snake)
-            reward = 1.0
+            reward = self.FOOD_REWARD
         else:
             # Remove tail if no food eaten
             self.snake.pop()
-            reward = -0.01  # Small penalty per step to encourage efficiency
+            reward = self.STEP_PENALTY
         
         info = {"score": self.score}
         return self._get_obs(), reward, self.done, info
