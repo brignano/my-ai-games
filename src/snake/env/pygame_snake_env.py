@@ -4,6 +4,7 @@ Gymnasium environment wrapper for Snake game.
 import gymnasium as gym
 from gymnasium import spaces
 import numpy as np
+import random
 
 from ..game import SnakeGame
 
@@ -47,6 +48,7 @@ class PygameSnakeEnv(gym.Env):
         
         if seed is not None:
             np.random.seed(seed)
+            random.seed(seed)
         
         obs = self.game.reset()
         info = {"score": self.game.score}

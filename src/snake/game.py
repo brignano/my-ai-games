@@ -97,8 +97,9 @@ class SnakeGame:
         new_direction = action_to_direction.get(action, self.direction)
         
         # Prevent reversing direction (can't go opposite to current direction)
-        if (new_direction[0] + self.direction[0] != 0 or 
-            new_direction[1] + self.direction[1] != 0):
+        # If the new direction is opposite, the sum would be (0, 0)
+        if not (new_direction[0] + self.direction[0] == 0 and 
+                new_direction[1] + self.direction[1] == 0):
             self.direction = new_direction
         
         # Move the snake
