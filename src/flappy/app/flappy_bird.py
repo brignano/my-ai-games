@@ -2,7 +2,7 @@ import pygame
 import random
 import sys
 
-pygame.init()
+# Constants
 SCREEN_W, SCREEN_H = 400, 600
 FPS = 60
 
@@ -23,21 +23,17 @@ SKY = (135, 206, 235)
 GREEN = (76, 187, 23)
 BLACK = (0, 0, 0)
 
-screen = pygame.display.set_mode((SCREEN_W, SCREEN_H))
-clock = pygame.time.Clock()
-font = pygame.font.SysFont(None, 36)
-
 def new_pipe(x):
     gap_y = random.randint(100, SCREEN_H - 100 - GAP_SIZE)
     top = pygame.Rect(x, 0, PIPE_WIDTH, gap_y)
     bottom = pygame.Rect(x, gap_y + GAP_SIZE, PIPE_WIDTH, SCREEN_H - (gap_y + GAP_SIZE))
     return {"top": top, "bottom": bottom, "passed": False}
 
-def draw_bird(y):
+def draw_bird(screen, y):
     pygame.draw.circle(screen, BLACK, (BIRD_X, int(y)), BIRD_RADIUS)
     pygame.draw.circle(screen, (255,255,0), (BIRD_X, int(y)), BIRD_RADIUS - 3)  # inner
 
-def draw_pipes(pipes):
+def draw_pipes(screen, pipes):
     for p in pipes:
         pygame.draw.rect(screen, GREEN, p["top"])
         pygame.draw.rect(screen, GREEN, p["bottom"])
@@ -52,6 +48,11 @@ def collided(bird_y, pipes):
     return False
 
 def main():
+    pygame.init()
+    screen = pygame.display.set_mode((SCREEN_W, SCREEN_H))
+    clock = pygame.time.Clock()
+    font = pygame.font.SysFont(None, 36)
+    
     running = True
     bird_y = SCREEN_H // 2
     bird_v = 0.0
@@ -109,8 +110,8 @@ def main():
 
         # drawing
         screen.fill(SKY)
-        draw_bird(bird_y)
-        draw_pipes(pipes)
+        draw_bird(screen, bird_y)
+        draw_pipes(screen, pipes)
 
         score_surf = font.render(f"Score: {score}", True, BLACK)
         screen.blit(score_surf, (10, 10))
