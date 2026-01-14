@@ -26,18 +26,37 @@ my-ai-games/
 └─ scripts/                  # convenience scripts (start, eval, viz)
 ```
 
-## Setup (in Devcontainer)
+## Setup
+
+
+### Requirements
+
+**Python 3.10 is required for full compatibility with Pygame, especially for font rendering.**
+Newer Python versions (e.g., 3.14) may cause errors with the `pygame.font` module due to unresolved compatibility issues.
+
+- **Python 3.10** (do not use 3.12 or higher for flappy bird game)
+- **Pygame** and other dependencies are listed in `requirements.txt`.
+
+### macOS: Install SDL2 Libraries
+
+Pygame requires SDL2 libraries on macOS. Install them with Homebrew:
+
+```sh
+brew install sdl2 sdl2_image sdl2_mixer sdl2_ttf pkg-config
+```
+
+### Devcontainer or Local Setup
 
 1. **Open in VS Code**: Use "Open in Container" or Codespaces for full devcontainer support.
 2. **Dependencies**: On first start, dependencies from `requirements.txt` are installed automatically.
 3. **Python Extension**: The devcontainer includes the VS Code Python extension for venv and linting support.
 4. **Virtual Environment (optional)**:
-	- Create: `python -m venv .venv`
-	- Activate: `source .venv/bin/activate`
-	- Install deps: `pip install -r requirements.txt`
+    - Create: `python -m venv .venv`
+    - Activate: `source .venv/bin/activate`
+    - Install deps: `pip install -r requirements.txt`
 5. **Run Games**:
-	- Flappy Bird: `python src/flappy/app/flappy_bird.py`
-	- Snake: `python src/snake/app/snake.py`
+    - Flappy Bird: `python src/flappy/app/flappy_bird.py`
+    - Snake: `python src/snake/app/snake.py`
 
 ## Notes on GUI
 
