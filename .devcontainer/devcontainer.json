@@ -6,7 +6,12 @@
     "vscode": {
       "extensions": [
         "ms-python.python"
-      ]
+      ],
+      "settings": {
+        "python-envs.defaultEnvManager": "ms-python.python:venv",
+        "python-envs.pythonProjects": [],
+        "python.languageServer": "Pylance"
+      }
     }
   },
   "postCreateCommand": "pip install --upgrade pip && pip install -r requirements.txt || true"
