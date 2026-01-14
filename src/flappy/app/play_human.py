@@ -2,7 +2,7 @@ import pygame
 import random
 import sys
 
-pygame.init()
+# Game constants
 SCREEN_W, SCREEN_H = 400, 600
 FPS = 60
 
@@ -18,14 +18,16 @@ GAP_SIZE = 160
 PIPE_SPEED = 3
 PIPE_INTERVAL = 1500  # ms
 
+# Colors
 WHITE = (255, 255, 255)
 SKY = (135, 206, 235)
 GREEN = (76, 187, 23)
 BLACK = (0, 0, 0)
 
-screen = pygame.display.set_mode((SCREEN_W, SCREEN_H))
-clock = pygame.time.Clock()
-font = pygame.font.SysFont(None, 36)
+# Global variables for pygame objects (initialized in main)
+screen = None
+clock = None
+font = None
 
 def new_pipe(x):
     gap_y = random.randint(100, SCREEN_H - 100 - GAP_SIZE)
@@ -52,6 +54,14 @@ def collided(bird_y, pipes):
     return False
 
 def main():
+    global screen, clock, font
+    
+    # Initialize pygame
+    pygame.init()
+    screen = pygame.display.set_mode((SCREEN_W, SCREEN_H))
+    clock = pygame.time.Clock()
+    font = pygame.font.SysFont(None, 36)
+    
     running = True
     bird_y = SCREEN_H // 2
     bird_v = 0.0

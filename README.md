@@ -28,6 +28,23 @@ my-ai-games/
 
 ## Setup
 
+### Environment Variables (.env)
+
+You can configure runtime options using a `.env` file in the project root. Copy `.env.example` to `.env` and adjust as needed:
+
+```
+cp .env.example .env
+```
+
+- `RENDER=1` — Enable Pygame rendering during agent training/evaluation (shows a game window)
+- `RENDER=0` — Run headless (no GUI window, default)
+
+The training scripts will automatically use this variable to control rendering. You can also override it on the command line:
+
+```
+RENDER=1 python -m src.flappy.app.train_agent
+```
+
 
 ### Requirements
 
@@ -60,7 +77,30 @@ brew install sdl2 sdl2_image sdl2_mixer sdl2_ttf pkg-config
 
 ## Notes on GUI
 
-These games open a separate window using Pygame. If running in a cloud devcontainer (e.g., Codespaces), GUI output may not be visible unless X11 forwarding or a browser-based GUI is configured.
+These games open a separate window using Pygame. If running in a cloud devcontainer (e.g., Codespaces), GUI output may not be visible unless X11 forwarding or a browser-based GUI is configured. For headless training or evaluation, use the Gym environment scripts, which do not require a display.
+
+## Running and Training Agents (Gym Environments)
+
+### Project Structure for Agents and Training
+
+- All runnable scripts (manual play, gym runners, training) are in `src/flappy/app/` and `src/snake/app/`.
+- Gym environment wrappers are in `src/flappy/env/` and `src/snake/env/`.
+- Core game logic is in `src/flappy/game.py` and `src/snake/game.py`.
+- Agent implementations go in `src/flappy/agents/` and `src/snake/agents/`.
+
+### Running a Random Agent (Headless)
+
+- Flappy Bird: `python -m src.flappy.app.train_agent`
+- Snake:    `python -m src.snake.app.train_agent` (if implemented)
+
+This will run the agent in the Gym environment and print episode results to the terminal. You can add new agents to the `agents/` folder and update the training script to use them.
+
+### Writing Your Own Agent
+
+- Implement your agent as a class in the `agents/` folder (see `random_agent.py` for an example).
+- Update or create a training script in `app/` to use your agent.
+
+**Tip:** Always use the `-m` flag from the project root to run scripts that import from `src/` (e.g., `python -m src.flappy.app.train_agent`).
 
 ## Contributing
 
