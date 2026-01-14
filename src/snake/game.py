@@ -47,10 +47,29 @@ class SnakeGame:
     
     def _random_cell(self, exclude):
         """Generate a random cell position not in the exclude list."""
-        while True:
+        # For efficiency when board is nearly full, use a different strategy
+        if len(exclude) > self.cols * self.rows * 0.75:
+            # If more than 75% full, find all empty cells
+            all_cells = [(x, y) for x in range(self.cols) for y in range(self.rows)]
+            empty_cells = [cell for cell in all_cells if cell not in exclude]
+            if empty_cells:
+                return random.choice(empty_cells)
+            # Fallback if no empty cells (game should be over)
+            return (0, 0)
+        
+        # For normal play, random sampling is faster
+        max_attempts = 1000  # Prevent infinite loops
+        for _ in range(max_attempts):
             p = (random.randrange(self.cols), random.randrange(self.rows))
             if p not in exclude:
                 return p
+        
+        # Fallback: find first empty cell
+        for x in range(self.cols):
+            for y in range(self.rows):
+                if (x, y) not in exclude:
+                    return (x, y)
+        return (0, 0)  # Should never reach here in normal gameplay
     
     def _get_obs(self):
         """
