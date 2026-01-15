@@ -1,11 +1,12 @@
 import numpy as np
+from src.common.agent import Agent
 
-class RandomAgent:
+class RandomAgent(Agent):
     """
     A simple agent that takes random actions from the environment's action space.
     """
     def __init__(self, action_space):
-        self.action_space = action_space
+        super().__init__(action_space)
 
     def select_action(self, observation):
         return self.action_space.sample()

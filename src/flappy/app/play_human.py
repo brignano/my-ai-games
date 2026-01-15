@@ -1,22 +1,6 @@
 import pygame
-import random
 import sys
-
-# Game constants
-SCREEN_W, SCREEN_H = 400, 600
-FPS = 60
-
-# Bird properties
-BIRD_X = 80
-BIRD_RADIUS = 16
-GRAVITY = 0.5
-FLAP_STRENGTH = -9
-
-# Pipe properties
-PIPE_WIDTH = 70
-GAP_SIZE = 160
-PIPE_SPEED = 3
-PIPE_INTERVAL = 1500  # ms
+from src.flappy.game import FlappyGame
 
 # Colors
 WHITE = (255, 255, 255)
@@ -24,20 +8,78 @@ SKY = (135, 206, 235)
 GREEN = (76, 187, 23)
 BLACK = (0, 0, 0)
 
-# Global variables for pygame objects (initialized in main)
-screen = None
-clock = None
-font = None
 
-def new_pipe(x):
-    gap_y = random.randint(100, SCREEN_H - 100 - GAP_SIZE)
-    top = pygame.Rect(x, 0, PIPE_WIDTH, gap_y)
-    bottom = pygame.Rect(x, gap_y + GAP_SIZE, PIPE_WIDTH, SCREEN_H - (gap_y + GAP_SIZE))
-    return {"top": top, "bottom": bottom, "passed": False}
+def draw_bird(screen, game):
+    pygame.draw.circle(screen, BLACK, (game.BIRD_X,
+                       int(game.bird_y)), game.BIRD_RADIUS)
+    pygame.draw.circle(screen, (255, 255, 0), (game.BIRD_X,
+                       int(game.bird_y)), game.BIRD_RADIUS - 3)
 
-def draw_bird(y):
-    pygame.draw.circle(screen, BLACK, (BIRD_X, int(y)), BIRD_RADIUS)
-    pygame.draw.circle(screen, (255,255,0), (BIRD_X, int(y)), BIRD_RADIUS - 3)  # inner
+
+def draw_pipes(screen, game):
+    for p in game.pipes:
+        # Top pipe
+        pygame.draw.rect(screen, GREEN, pygame.Rect(
+            p["top_x"], 0, game.PIPE_WIDTH, p["top_h"]))
+        # Bottom pipe
+        pygame.draw.rect(screen, GREEN, pygame.Rect(
+            p["bottom_x"], p["bottom_y"], game.PIPE_WIDTH, p["bottom_h"]))
+
+
+def main():
+    pygame.init()
+    screen = pygame.display.set_mode(
+        (FlappyGame.SCREEN_W, FlappyGame.SCREEN_H))
+    clock = pygame.time.Clock()
+    font = pygame.font.SysFont(None, 36)
+    FPS = 60
+
+    running = True
+    game = FlappyGame()
+    obs = game.reset()
+    game_over = False
+
+    while running:
+        dt = clock.tick(FPS)
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                running = False
+                break
+            if event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_SPACE:
+                    if game.done:
+                        obs = game.reset()
+                    else:
+                        obs, reward, done, info = game.step(
+                            FlappyGame.ACTION_FLAP)
+                if event.key == pygame.K_ESCAPE:
+                    running = False
+
+        if not game.done:
+            obs, reward, done, info = game.step(FlappyGame.ACTION_NOOP)
+
+        # drawing
+        screen.fill(SKY)
+        draw_bird(screen, game)
+        draw_pipes(screen, game)
+
+        score_surf = font.render(f"Score: {game.score}", True, BLACK)
+        screen.blit(score_surf, (10, 10))
+
+        if game.done:
+            go = font.render("Game Over - Press SPACE to restart", True, BLACK)
+            rect = go.get_rect(
+                center=(FlappyGame.SCREEN_W//2, FlappyGame.SCREEN_H//2))
+            screen.blit(go, rect)
+
+        pygame.display.flip()
+
+    pygame.quit()
+    sys.exit()
+
+
+if __name__ == "__main__":
+    main()
 
 def draw_pipes(pipes):
     for p in pipes:
